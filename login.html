@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Food Business - Admin Login</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <style>
+        /* Background with food image */
+        body {
+            background: url('food-bg.jpg') no-repeat center center/cover;
+            min-height: 100vh;
+            color: #fff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0;
+            padding: 0;
+        }
+
+        .login-container {
+            max-width: 420px;
+            width: 90%;
+            padding: 40px;
+            background: rgba(0, 0, 0, 0.85); /* Dark transparent background */
+            border-radius: 12px;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.8);
+            transition: 0.4s;
+            text-align: center;
+        }
+
+        .login-container:hover {
+            transform: translateY(-10px);
+        }
+
+        h2 {
+            color: #ffeb3b; /* Warm yellow heading */
+        }
+
+        .form-control {
+            background: #fff8e1;
+            color: #6b4226;
+            transition: 0.3s ease;
+        }
+
+        .form-control:focus {
+            box-shadow: 0 0 15px rgba(255, 87, 34, 0.8);
+            border-color: #ff5722;
+        }
+
+        .btn-food {
+            background: #ff5722;
+            color: #fff;
+            transition: 0.3s;
+        }
+
+        .btn-food:hover {
+            background: #e64a19;
+            transform: scale(1.05);
+        }
+
+        .btn-food:active {
+            transform: scale(0.95);
+        }
+
+        /* Footer styling */
+        .footer {
+            margin-top: 20px;
+            color: #ccc;
+            font-size: 14px;
+            text-align: center;
+        }
+
+        .footer a {
+            color: #ffeb3b;
+            text-decoration: none;
+        }
+
+        .footer a:hover {
+            color: #ff5722;
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+            body {
+                padding: 20px;
+                background-size: cover;
+            }
+
+            .login-container {
+                padding: 30px;
+                width: 100%;
+                max-width: 100%;
+            }
+
+            h2 {
+                font-size: 1.6rem;
+            }
+
+            .footer {
+                font-size: 12px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .login-container {
+                padding: 20px;
+            }
+
+            h2 {
+                font-size: 1.4rem;
+            }
+
+            .footer {
+                font-size: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Login Container -->
+    <div class="login-container">
+        <h2 class="mb-4"><i class="fas fa-utensils"></i> Admin Login</h2>
+        
+        <form id="loginForm">
+            <div class="mb-3">
+                <input type="text" id="username" class="form-control" placeholder="Username" required>
+            </div>
+            <div class="mb-3">
+                <input type="password" id="password" class="form-control" placeholder="Password" required>
+            </div>
+            <button type="submit" class="btn btn-food w-100">Login</button>
+
+            <!-- Footer inside the form -->
+            <div class="footer mt-4">
+                <p>Developed by <strong>Sandy</strong> | 
+                    <a href="https://www.instagram.com/lovely_sandy_008/?igsh=MTF5c3J1dGc1aGs5cQ%3D%3D#" target="_blank">
+                        <i class="fab fa-instagram"></i> Follow on Instagram
+                    </a>
+                </p>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById("loginForm").addEventListener("submit", async function(event) {
+            event.preventDefault();
+
+            const username = document.getElementById("username").value.trim();
+            const password = document.getElementById("password").value.trim();
+
+            if (!username || !password) {
+                alert("Please enter both username and password.");
+                return;
+            }
+
+            try {
+                const response = await fetch("https://food-website-backend-8fgi.onrender.com/api/admin/login", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ username, password })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    localStorage.setItem("token", data.token);
+                    window.location.href = "dashboard.html";  // Redirect to the dashboard on success
+                } else {
+                    alert(data.message || "Invalid Username or Password");
+                }
+            } catch (error) {
+                console.error("Error:", error);
+                alert("Something went wrong. Please try again.");
+            }
+        });
+    </script>
+
+</body>
+</html>

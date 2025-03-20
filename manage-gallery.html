@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Admin Panel - Gallery</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <style>
+        body {
+            background-color: #fff3e0; /* Light orange background for a warm, food-friendly feel */
+            font-family: 'Comic Sans MS', cursive, sans-serif; /* Playful font for a food theme */
+            padding: 10px;
+        }
+        .container {
+            max-width: 800px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .preview-img {
+            display: none;
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            margin-top: 10px;
+            border-radius: 10px;
+        }
+        .gallery-item {
+            border: 1px solid #ddd;
+            padding: 10px;
+            border-radius: 10px;
+            background: #fff;
+            text-align: center;
+            transition: transform 0.3s ease-in-out;
+            position: relative;
+        }
+        .gallery-item:hover {
+            transform: scale(1.05);
+        }
+        .gallery-item img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 10px;
+        }
+        .btn-edit {
+            background-color: #ff9800; /* Orange color for edit button */
+            color: white;
+            margin-right: 5px;
+        }
+        .btn-delete {
+            background-color: #e91e63; /* Pink color for delete button */
+            color: white;
+        }
+        .btn-success {
+            background-color: #4caf50; /* Green color for upload button */
+            color: white;
+        }
+        .btn-primary {
+            background-color: #2196f3; /* Blue color for back to dashboard button */
+            color: white;
+        }
+        .modal-content {
+            background-color: #fff3e0; /* Light orange background for modal */
+        }
+        .modal-header {
+            background-color: #ff9800; /* Orange background for modal header */
+            color: white;
+        }
+        .modal-footer {
+            background-color: #ff9800; /* Orange background for modal footer */
+        }
+        .form-control {
+            border-radius: 5px;
+            border: 1px solid #ff9800; /* Orange border for form controls */
+        }
+        .form-control:focus {
+            border-color: #e91e63; /* Pink border for focused form controls */
+            box-shadow: 0 0 5px rgba(233, 30, 99, 0.5);
+        }
+        .fa-edit, .fa-trash {
+            color: white;
+        }
+        .fa-edit:hover, .fa-trash:hover {
+            color: #ffeb3b; /* Yellow color for hover effect on icons */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="text-start mb-3">
+            <a href="dashboard.html" class="btn btn-primary">⬅️ Back to Dashboard</a>
+        </div>
+        <h2>🍕 Gallery Management 🍔</h2>
+        <div class="mb-4">
+            <input type="file" id="image-upload" class="form-control">
+            <img id="preview" class="preview-img">
+            <input type="text" id="image-name" class="form-control mt-2" placeholder="Enter Name" required>
+            <textarea id="image-description" class="form-control mt-2" placeholder="Enter Description" required></textarea>
+            <button class="btn btn-success mt-3" onclick="uploadImage()">Upload 🚀</button>
+        </div>
+
+        <h2>🍟 Gallery 🍩</h2>
+        <div id="gallery-container" class="row g-3"></div>
+    </div>
+
+    <!-- Edit Modal -->
+    <div class="modal fade" id="editModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit Image Details ✏️</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="edit-id">
+                    <input type="text" id="edit-name" class="form-control mb-2" placeholder="Update Name">
+                    <textarea id="edit-description" class="form-control" placeholder="Update Description"></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-primary" onclick="saveEdit()">Save Changes 💾</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const BASE_URL = "https://food-website-backend-8fgi.onrender.com/api/gallery";
+
+        // Preview image upload
+        document.getElementById("image-upload").addEventListener("change", function (event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    document.getElementById("preview").src = e.target.result;
+                    document.getElementById("preview").style.display = "block";
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Upload image
+        async function uploadImage() {
+            const fileInput = document.getElementById("image-upload");
+            const name = document.getElementById("image-name").value.trim();
+            const description = document.getElementById("image-description").value.trim();
+
+            if (!fileInput.files.length || !name || !description) {
+                alert("Please fill all fields 🚨");
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append("image", fileInput.files[0]);
+            formData.append("name", name);
+            formData.append("description", description);
+
+            try {
+                await fetch(`${BASE_URL}/upload`, { method: "POST", body: formData });
+                alert("Image uploaded successfully! 🎉");
+                location.reload();
+            } catch (error) {
+                console.error("Error:", error);
+                alert("Upload failed. 🚨");
+            }
+        }
+
+        // Load gallery items
+        async function loadGallery() {
+            const response = await fetch(BASE_URL);
+            const images = await response.json();
+            document.getElementById("gallery-container").innerHTML = images.map(img => `
+                <div class="col-12 col-sm-6 col-md-4 gallery-item" id="gallery-${img._id}">
+                    <img src="https://food-website-backend-8fgi.onrender.com${img.imageUrl}" alt="Gallery Image">
+                    <p><strong>${img.name}</strong></p>
+                    <p>${img.description}</p>
+                    <button class="btn btn-sm btn-edit" onclick="openEditModal('${img._id}', '${img.name}', '${img.description}')">
+                        <i class="fa fa-edit"></i> Edit
+                    </button>
+                    <button class="btn btn-sm btn-delete" onclick="deleteImage('${img._id}')">
+                        <i class="fa fa-trash"></i> Delete
+                    </button>
+                </div>
+            `).join("");
+        }
+
+        // Open edit modal
+        function openEditModal(id, name, description) {
+            document.getElementById("edit-id").value = id;
+            document.getElementById("edit-name").value = name;
+            document.getElementById("edit-description").value = description;
+            new bootstrap.Modal(document.getElementById("editModal")).show();
+        }
+
+        // Save edited details
+        async function saveEdit() {
+            const id = document.getElementById("edit-id").value;
+            const newName = document.getElementById("edit-name").value.trim();
+            const newDescription = document.getElementById("edit-description").value.trim();
+
+            if (!newName || !newDescription) {
+                alert("Fields cannot be empty! 🚨");
+                return;
+            }
+
+            try {
+                await fetch(`${BASE_URL}/update/${id}`, {
+                    method: "PUT",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ name: newName, description: newDescription })
+                });
+                alert("Image updated successfully! 🎉");
+                document.getElementById("editModal").querySelector(".btn-close").click();
+                loadGallery();
+            } catch (error) {
+                console.error("Error:", error);
+                alert("Update failed. 🚨");
+            }
+        }
+
+        // Delete image
+        async function deleteImage(id) {
+            if (confirm("Are you sure you want to delete this image? 🗑️")) {
+                try {
+                    await fetch(`${BASE_URL}/delete/${id}`, { method: "DELETE" });
+                    alert("Image deleted successfully! 🎉");
+                    document.getElementById(`gallery-${id}`).remove();
+                } catch (error) {
+                    console.error("Error:", error);
+                    alert("Delete failed. 🚨");
+                }
+            }
+        }
+
+        // Load gallery on page load
+        loadGallery();
+    </script>
+</body>
+</html>

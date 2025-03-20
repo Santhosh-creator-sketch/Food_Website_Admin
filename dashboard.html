@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Food Business - Admin Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        body {
+            background: url('food-bg.jpg') no-repeat center center/cover;
+            min-height: 100vh;
+            color: #fff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .container {
+            margin-top: 60px;
+            padding: 40px;
+            background: rgba(0, 0, 0, 0.85);
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.7);
+        }
+        h2, .btn-primary {
+            color: #ffeb3b; /* Warm yellow headings */
+        }
+        .card {
+            transition: 0.3s;
+            border: none;
+            background: #fff8e1; /* Light food-like color */
+            color: #6b4226;
+        }
+        .card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.5);
+        }
+        .card i {
+            font-size: 40px;
+            color: #ff5722; /* Food orange */
+        }
+        .btn-food {
+            background: #ff5722;
+            color: #fff;
+        }
+        .btn-food:hover {
+            background: #e64a19;
+        }
+        .btn-logout {
+            background: #dc3545; /* Red color for logout */
+            color: #fff;
+            font-weight: bold;
+            border: none;
+            transition: 0.3s;
+        }
+        .btn-logout:hover {
+            background: #c82333;
+        }
+        footer {
+            background: #333;
+            color: #ccc;
+            padding: 20px 0;
+            text-align: center;
+            position: relative;
+            bottom: 0;
+            width: 100%;
+        }
+        footer a {
+            color: #ffeb3b;
+            text-decoration: none;
+        }
+        footer a:hover {
+            color: #ff5722;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Main Section -->
+<div class="container text-center">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Welcome to the Admin Dashboard</h2>
+        <button class="btn btn-logout" onclick="logout()">Logout</button>
+    </div>
+    
+    <p>Manage your food business efficiently with easy access to menu, gallery, bookings, and messages.</p>
+
+    <div class="row mt-5">
+        <div class="col-lg-3 col-md-6 mb-4">
+            <div class="card p-4 text-center">
+                <i class="fas fa-utensils"></i>
+                <h4 class="mt-3">Menu</h4>
+                <p>Manage and update your food menu.</p>
+                <a href="manage-menu.html" class="btn btn-food">Go to Menu</a>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6 mb-4">
+            <div class="card p-4 text-center">
+                <i class="fas fa-images"></i>
+                <h4 class="mt-3">Gallery</h4>
+                <p>Showcase delicious dishes with photos.</p>
+                <a href="manage-gallery.html" class="btn btn-food">View Gallery</a>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6 mb-4">
+            <div class="card p-4 text-center">
+                <i class="fas fa-calendar-alt"></i>
+                <h4 class="mt-3">Bookings</h4>
+                <p>Manage customer reservations.</p>
+                <a href="manage-dates.html" class="btn btn-food">Check Bookings</a>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6 mb-4">
+            <div class="card p-4 text-center">
+                <i class="fas fa-envelope"></i>
+                <h4 class="mt-3">Messages</h4>
+                <p>View and respond to customer inquiries.</p>
+                <a href="messages.html" class="btn btn-food">Messages</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Footer -->
+<footer>
+    <p>Developed by <strong>Sandy</strong> | 
+        <a href="https://www.instagram.com/lovely_sandy_008/?igsh=MTF5c3J1dGc1aGs5cQ%3D%3D#" target="_blank">
+            <i class="fab fa-instagram"></i> Follow on Instagram
+        </a>
+    </p>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    // Logout function with redirection
+    function logout() {
+        alert("Logging out...");
+        window.location.href = "login.html"; // Redirect to login page
+    }
+</script>
+
+</body>
+</html>
